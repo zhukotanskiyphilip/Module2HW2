@@ -2,16 +2,16 @@
 {
     public class Product
     {
-        private string _price;
+        private int _price;
         private string _name;
 
-        public Product(string price, string name)
+        public Product(int price, string name)
         {
             _price = price;
             _name = name;
         }
 
-        public string GetPrice()
+        public int GetPrice()
         {
             return _price;
         }

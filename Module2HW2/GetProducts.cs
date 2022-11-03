@@ -20,8 +20,7 @@
                                     HtmlAgilityPack.HtmlDocument htmlDoc = new HtmlAgilityPack.HtmlDocument();
                                     htmlDoc.LoadHtml(html);
 
-                                    var result = htmlDoc.DocumentNode.SelectNodes(".//rz-grid[@class=\"ng-star-inserted\"]//" +
-                                       "rz-catalog-tile[@class=\"ng-star-inserted\"]");
+                                    var result = htmlDoc.DocumentNode.SelectNodes(".//div[@class=\"goods-tile__inner\"]");
 
                                     Product.Product[] products = new Product.Product[result.Count];
 
@@ -29,19 +28,35 @@
                                     {
                                         for (int i = 0; i < products.Length; i++)
                                         {
-                                            var priceNode = result[i].SelectSingleNode(".//p[class=\"ng-star-inserted\"]");
-                                            var price = string.Empty;
-                                            if (priceNode != null)
-                                            {
-                                                price = priceNode.InnerText;
-                                            }
-
-                                            var nameNode = result[i].SelectSingleNode(".//a[class=\"goods - tile__heading ng - star - inserted\"]");
+                                            var nameNode = result[i].SelectSingleNode(".//a[@class=\"goods-tile__heading ng-star-inserted\"]" +
+                                                "//span[@class=\"goods-tile__title\"]");
                                             var name = string.Empty;
                                             if (nameNode != null)
                                             {
                                                 name = nameNode.InnerText;
                                             }
+
+                                            var priceNode = result[i].SelectSingleNode(".//div[@class=\"goods-tile__prices\"]" +
+                                                "//span[@class=\"goods-tile__price-value\"]");
+                                            var sPrice = string.Empty;
+                                            if (priceNode != null)
+                                            {
+                                                sPrice = priceNode.InnerText;
+
+                                                var temp = string.Empty;
+                                                foreach (var c in sPrice)
+                                                {
+                                                    if (char.IsDigit(c))
+                                                    {
+                                                        temp += c;
+                                                    }
+                                                }
+
+                                                sPrice = temp;
+                                            }
+
+                                            var price = 0;
+                                            int.TryParse(sPrice, out price);
 
                                             Product.Product product = new Product.Product(price, name);
                                             products[i] = product;
